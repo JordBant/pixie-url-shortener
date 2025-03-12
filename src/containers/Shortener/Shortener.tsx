@@ -8,11 +8,7 @@ import React, {
 } from "react";
 import { ShortenerView } from "../../components/ShortenerView/ShortenerView";
 
-export default function Shortener({
-  initialPosition,
-}: {
-  initialPosition?: number;
-}) {
+export default function Shortener() {
   const [shouldCollapse, setShouldCollapse] = useState(false);
   const shortenerRef = useRef<HTMLDivElement>();
   const [pixelHeight, setPixelHeight] = useState<number | null>(null);
