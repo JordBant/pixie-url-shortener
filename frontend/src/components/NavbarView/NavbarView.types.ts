@@ -6,7 +6,7 @@ export type Item = {
 };
 
 export type ItemViewProps = {
-    allItems: Item[];
+    items: Item[];
 };
 
 export type NavbarViewProps = {
