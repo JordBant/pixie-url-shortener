@@ -1,4 +1,3 @@
-import React from "react";
 import { ItemViewProps } from "./NavbarView.types";
 
 export default function Items({ items }: ItemViewProps) {

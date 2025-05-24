@@ -1,9 +1,7 @@
-import React, { forwardRef, LegacyRef } from "react";
+import { forwardRef, LegacyRef } from "react";
 import { Droplet } from "lucide-react";
 import NavbarItems from "./ItemsView";
 import { NavbarViewProps } from "./NavbarView.types";
-import { testCSSBorders } from "../../lib/utils";
-import Shortener from "../../containers/Shortener/Shortener";
 
 const NavbarView = forwardRef(({ navbarItemsProps }: NavbarViewProps, ref) => {
   return (

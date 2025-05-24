@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ShortenerView } from "../../components/ShortenerView/ShortenerView";
 
 export default function Shortener() {
