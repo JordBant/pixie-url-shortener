@@ -5,4 +5,3 @@ app = FastAPI()
 @app.get("/")
 def read_root():
     return {"message": "It works!"}
-pixie-url-shortener.railway.internal
