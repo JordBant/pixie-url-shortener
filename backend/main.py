@@ -6,12 +6,22 @@ from models import ShortURL, User
 
 # from models.helpers import hash_and_encode
 
+# Enum-like dictionary
+routes = {
+    "post": {
+        "get_with_id": "get_with_id",
+        "create_new_user": "create_new_user",
+    },
+}
+
 app = FastAPI()
 
-# @app.get("/")
-# def read_root():
-#     # hash_and_encode("Testing out this string")
-#     return hash_and_encode("Testing out this string")
+
+@app.post(f"/rmpl/{routes.post.create_new_user}")
+def create_new_user(new_user: User):
+    
+    # new_user = User(new_user)
+    return new_user
 
 
 def main():
