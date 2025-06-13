@@ -4,26 +4,42 @@ from models import User
 
 
 class DB:
-    # Must be checked manually
-    msg_logger: list[tuple]
-
     def __init__(self, db="rumpulinks.db"):
         # Init DB
         self.db_name = db
+        self._init_schemas().close_conn()
 
-    def open_conn(self):
-        self.connection = sqlite3.connect(self.db_name)
-
-        # Creating dict like accessible rows for myself
-        self.connection.row_factory = sqlite3.Row
-
-        # Enable foreign keys for this connection:
-        with self.connection:
-            self.connection.execute("PRAGMA foreign_keys = ON;")
+    def _init_schemas(self, schemas: tuple[str, ...] = ("/db/tables/init.sql",)):
+        cursor = self.open_conn().connection.cursor()
+        for file in schemas:
+            with open(file, "r") as f:
+                cursor.executescript(f.read())
         return self
 
+    def _is_connected(self):
+        if hasattr(self, "connection"):
+            try:
+                self.connection.execute("SELECT 1")
+                return True
+            except Exception:
+                return False
+        else:
+            return False
+
+    def open_conn(self):
+        if not self._is_connected():
+            self.connection = sqlite3.connect(self.db_name)
+
+            # Enable foreign keys for this connection:
+            with self.connection:
+                self.connection.execute("PRAGMA foreign_keys = ON;")
+            self.is_open = True
+            return self
+        else:
+            raise Exception("An already established connection exists")
+
     def create_new_user(self, user: User):
-        if self.is_redundant("Users", "username", user.username):
+        if self.is_redundant("Users", "username", user["username"]):
             raise ValueError("This already exists")
         keys = tuple(dict(user).keys())
         values = tuple(dict(user).values())
@@ -37,16 +53,17 @@ class DB:
 
         with self.connection:
             cursor = self.connection.cursor()
-            query = f"INSERT INTO Users ({cols}) Value({placeholder})"
+            query = f"INSERT INTO Users ({cols}) Value ({placeholder})"
             cursor.execute(query, values)
 
         return self
 
     def close_conn(self):
-        if self.connection:
+        if self._is_connected():
             self.connection.close()
+            self.is_open = False
         return self
-    
+
     def __enter__(self):
         return self.open_conn()
 

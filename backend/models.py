@@ -3,28 +3,26 @@ from hashlib import sha256
 from string import ascii_letters, digits
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, EmailStr, SecretBytes, SecretStr
+from pydantic import BaseModel, SecretBytes
 
 from auth.password_manager import PasswordManager
-
 
 class User(BaseModel):
     id: str
     first_name: str
     last_name: str
     username: str
-    email: EmailStr
+    # email: EmailStr
+    email: str
     date_of_birth: date
+    password: str
+    # password: SecretStr
     password_hash: SecretBytes = ""
 
     # Hash Password
     @classmethod
     def _hash_password(cls):
         cls.password_hash = PasswordManager.hash_password(cls.password)
-
-
-class IShortURLInitPayload(BaseModel):
-    new_url: str
 
 
 #  ________________________| Short URL |________________________
@@ -61,6 +59,3 @@ class ShortURL:
             n, rem = divmod(n, 62)
             chars.append(self._ALPHA_NUMS[rem])
         return "".join(reversed(chars)).zfill(len)
-
-
-#  __________________________| User |__________________________
