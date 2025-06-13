@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
+from db.service import DB
 from models import ShortURL, User
 
 # from models import ShortURL, URLEncoder, User
@@ -19,9 +20,13 @@ app = FastAPI()
 
 @app.post(f"/rmpl/{routes.post.create_new_user}")
 def create_new_user(new_user: User):
-    
-    # new_user = User(new_user)
-    return new_user
+    try:
+        with DB() as db:
+            db.create_new_user(new_user)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "User created", "status": 200, "res": new_user}
 
 
 def main():

@@ -5,21 +5,22 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel, EmailStr, SecretBytes, SecretStr
 
-# ________________________| Data Classes |________________________
+from auth.password_manager import PasswordManager
+
 
 class User(BaseModel):
+    id: str
     first_name: str
     last_name: str
     username: str
     email: EmailStr
     date_of_birth: date
-    password: SecretStr
     password_hash: SecretBytes = ""
 
     # Hash Password
     @classmethod
-    def hash_password(cls): 
-
+    def _hash_password(cls):
+        cls.password_hash = PasswordManager.hash_password(cls.password)
 
 
 class IShortURLInitPayload(BaseModel):
@@ -41,7 +42,7 @@ class ShortURL:
 
     def __init__(
         self,
-        new_url: str,
+        url: str,
     ):
         uuid = uuid4()
         temp = uuid
@@ -51,7 +52,7 @@ class ShortURL:
 
         self.slug = slug
         self.uuid = uuid
-        self.original_url = new_url
+        self.original_url = url
         self.short_url = f"customdomain.com/{slug}"
 
     def _int_to_base(self, n, len: int = 0):
@@ -63,38 +64,3 @@ class ShortURL:
 
 
 #  __________________________| User |__________________________
-
-
-class User:
-    # all_short_urls: dict[str, ShortURL] = {}
-    # all_original_urls: list[str] = []
-    id: str
-    first_name: str
-    last_name: str
-    username: str
-    date_of_birth: date
-    email: EmailStr
-    _password_hash: SecretStr
-
-    # def __init__(self, user_info: IUser):
-
-    # Call DB on username to check if exists
-
-    # def add_url(self, user_infor: IUser) -> None:
-    #     if url in self.all_original_urls:
-    #         raise Exception("This url already exists")
-
-    #     new_short_url = ShortURL({"new_url": url, "created_at": ""})
-    #     self.shortened_urls[new_short_url.short_url] = new_short_url
-
-    # def delete_url(self, short_url: str) -> None:
-    #     if self.all_short_urls[short_url]:
-    #         del self.all_short_urls[short_url]
-    #     else:
-    #         raise KeyError(f"The key '{short_url}' doesn't exist on your account.")
-
-    # def edit_url(self, short_url_key, payload: IShortURLInitPayload):
-    #     if not self.all_short_urls[short_url_key]:
-    #         raise KeyError(f"The key '{short_url_key}' doesn't exist on your account.")
-    #     for item in payload:
-    #         self.all_short_urls[short_url_key] = payload[item]
