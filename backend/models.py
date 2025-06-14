@@ -28,15 +28,15 @@ class User(BaseModel):
 #  ________________________| Short URL |________________________
 
 
-class ShortURL:
+class ShortURL(BaseModel):
     _ALPHA_NUMS = ascii_letters + digits
 
-    original_url: str
-    metrics: dict = {}
-    created_at: str = ""
-    short_url: str
     uuid: UUID
     slug: str
+    original_url: str
+    # metrics: dict = {}
+    created_at: str
+    short_url: str
 
     def __init__(
         self,

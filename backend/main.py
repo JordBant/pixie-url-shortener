@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 from db.service import DB
 from models import ShortURL, User
@@ -6,19 +7,28 @@ from models import ShortURL, User
 # from models import ShortURL, URLEncoder, User
 
 # from models.helpers import hash_and_encode
-
-# Enum-like dictionary
-APP_ROUTES = {
-    "post": {
-        "get_with_id": "get_with_id",
-        "create_new_user": "create_new_user",
-    },
-}
-
 app = FastAPI()
 
 
-# @app.post(f"/rmpl/{APP_ROUTES.post}")
+class AppRoutes:
+    POST = {
+        "CREATE_NEW_USER": "create-new-user",
+        "CREATE_SHORT_URL": "create-short-url",
+    }
+    DELETE = {
+        "DELETE_USER": "delete-user",
+    }
+    BASE = "rmpl/"
+
+    def go(self, endpoint):
+        return f"{self.BASE}{endpoint}"
+
+
+r = AppRoutes()
+POST, DELETE = vars(AppRoutes()).values()
+
+
+@app.post(r.go(POST['CREATE_NEW_USER']))
 def create_new_user(new_user: User):
     try:
         with DB() as db:
@@ -28,30 +38,21 @@ def create_new_user(new_user: User):
 
     return {"message": "User created", "status": 200, "res": new_user}
 
+@app.post(r.go(POST["create-short-url"]))
+def create_short_url(user_id: int, original_url: str ):
+    pass
 
 def main():
     temp: User = {
-        "id": "str",
         "first_name": "str",
         "last_name": "str",
-        "username": "str",
-        "email": "EmailStr",
-        "date_of_birth": "date",
+        "username": "str2",
+        "email": "EmailStr@abcgfd.com",
+        "date_of_birth": "2025-06-12",
         "password_hash": "SecretBytes",
     }
     # ------------------POST (Creating a new url)-----------------
     print(create_new_user(temp))
-    # new_url: str
-    # while True:
-    #     get_input = input("Give me a URL")
-    #     if not get_input or not get_input.strip():
-    #         print("try again")
-    #     else:
-    #         new_url = get_input
-    #         break
-
-    # # Init new short url
-    # new_short_url = ShortURL(new_url)
 
 
 # If we are in the main file, then execute

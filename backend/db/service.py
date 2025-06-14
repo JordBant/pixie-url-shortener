@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 from models import User
@@ -9,10 +10,12 @@ class DB:
         self.db_name = db
         self._init_schemas().close_conn()
 
-    def _init_schemas(self, schemas: tuple[str, ...] = ("/db/tables/init.sql",)):
+    def _init_schemas(self, schemas: tuple[str, ...] = ("tables/init.sql",)):
+        path = os.path
         cursor = self.open_conn().connection.cursor()
         for file in schemas:
-            with open(file, "r") as f:
+            script_path = path.join(path.dirname(__file__), file)
+            with open(script_path, "r") as f:
                 cursor.executescript(f.read())
         return self
 
@@ -53,7 +56,7 @@ class DB:
 
         with self.connection:
             cursor = self.connection.cursor()
-            query = f"INSERT INTO Users ({cols}) Value ({placeholder})"
+            query = f"INSERT INTO Users ({cols}) VALUES ({placeholder})"
             cursor.execute(query, values)
 
         return self
