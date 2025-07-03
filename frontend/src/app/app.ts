@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  // styleUrl: './app.scss',
-  template: `
-  <main class="text-3xl font-bold underline">
-    Is my tailwind alive
-  </main>
-  `,
+  imports: [],
   // templateUrl: './app.html',
-  imports: []
+  template: `
+    <main class="pxy-flex-center">
+      Hi Im paul
+    </main>
+  `,
+  // styleUrl: './app.scss'
 })
 export class App {
   protected title = 'frontend';
